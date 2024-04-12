@@ -12,9 +12,9 @@ WeaponSystem::WeaponSystem(TheBot& owner, World& world)
 	m_weapons.emplace(std::make_pair(WeaponType::RocketLauncher, Weapon{owner, world, WeaponType::RocketLauncher} ));
 	m_weapons.emplace(std::make_pair(WeaponType::Railgun,        Weapon{owner, world, WeaponType::Railgun} ));
 	m_has_weapon[WeaponType::Blaster] = true;
-	m_has_weapon[WeaponType::Shotgun] = false;
-	m_has_weapon[WeaponType::RocketLauncher] = false;
-	m_has_weapon[WeaponType::Railgun] = false;
+	m_has_weapon[WeaponType::Shotgun] = true;
+	m_has_weapon[WeaponType::RocketLauncher] = true;
+	m_has_weapon[WeaponType::Railgun] = true;
 }
 
 auto WeaponSystem::update(sf::Time dt) -> void

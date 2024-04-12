@@ -16,11 +16,11 @@ public:
 	Weapon(TheBot& owner, World& world, WeaponType type);
 	auto update(sf::Time dt) -> void;
 	auto shoot() -> void;
-	auto num_rounds() const -> int;
+	auto num_rounds() const -> int { return m_num_rounds; }
 	auto set_num_rounds(int num) -> void;
 	auto increment_rounds(int num) -> void;
 	auto decrement_rounds(int num) -> void;
-	auto max_rounds() const -> int;
+	auto max_rounds() const -> int { return m_max_rounds; }
 	auto type() const -> WeaponType;
 private:
 	auto is_ready_to_shoot() -> bool;

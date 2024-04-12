@@ -5,6 +5,7 @@ TheBot::TheBot(World& world)
 	: m_world{world}
 {
 	set_type(EntityType::Bot);
+	m_weapon_system = std::make_unique<WeaponSystem>(*this, world);
 }
 
 auto TheBot::rotate(float rad) -> void
@@ -17,6 +18,7 @@ auto TheBot::update(sf::Time dt) -> void
 	v2 force{0, 0};
 	if(is_alive()) {
 		force = steering().calculate_force(*this);
+		m_weapon_system->update(dt);
 	}
 
 	// no force applied, apply friction instead
@@ -49,7 +51,8 @@ auto TheBot::decrease_health(int amount) -> void
 
 auto TheBot::shoot_weapon() -> void
 {
-	m_world.add_projectile(EntityType::ProjectileBolt, id(), pos(), facing());
+	m_weapon_system->shoot();
+	//m_world.add_projectile(EntityType::ProjectileBolt, id(), pos(), facing());
 	//m_world.add_projectile(EntityType::ProjectileRocket, id(), pos(), facing());
 	//m_world.add_projectile(EntityType::ProjectilePellet, id(), pos(), facing());
 	//m_world.add_projectile(EntityType::ProjectileSlug, id(), pos(), facing());

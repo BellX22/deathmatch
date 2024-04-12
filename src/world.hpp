@@ -21,6 +21,7 @@ public:
     auto bots() const -> std::vector<TheBot::Ptr> const& { return m_bots; }
     auto projectiles() const -> std::vector<Projectile::Ptr> const& { return m_projectiles; }
     auto spawn_points() const -> std::vector<v2> const& { return m_spawnpoints; }
+    auto player() const -> TheBot* { return m_player_bot; }
 
     // map is only conceptual...
     //auto load_map(std::istream& in) -> void;

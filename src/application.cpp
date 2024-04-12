@@ -7,8 +7,8 @@ Application::Application(int argc, char **argv)
 	, m_window()
 	, m_debug(m_window)
 {
-	//m_window.create(sf::VideoMode::getDesktopMode(), "Deathmatch");
-	m_window.create(sf::VideoMode(640, 480), "Deathmatch");
+	m_window.create(sf::VideoMode::getDesktopMode(), "Deathmatch");
+	//m_window.create(sf::VideoMode(640, 480), "Deathmatch");
 	m_window.setVerticalSyncEnabled(true);
 
 	m_default_font.loadFromFile("/usr/share/fonts/truetype/freefont/FreeSerif.ttf");

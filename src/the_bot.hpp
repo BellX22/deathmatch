@@ -1,6 +1,6 @@
 #pragma once
 #include "entity.hpp"
-//#include "weapon_system.hpp"
+#include "weapon_system.hpp"
 //#include "ai/goal_think.hpp"
 
 class World;
@@ -28,6 +28,7 @@ public:
 	auto decrease_health(int amount) -> void;
 	auto health() -> int { return m_health; }
 	auto max_health() -> int { return m_max_health; }
+	auto weapon_system() -> WeaponSystem& { return *m_weapon_system; }
 
 	auto update(sf::Time dt) -> void override final;
 
@@ -37,4 +38,5 @@ private:
 	v2        m_facing{1, 0};
 	int       m_max_health{100};
 	int       m_health{m_max_health};
+	std::unique_ptr<WeaponSystem> m_weapon_system;
 };

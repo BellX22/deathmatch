@@ -1,11 +1,18 @@
 #include "debug_renderer.hpp"
 #include "game_config.hpp"
 #include <cassert>
+#include <sstream>
 
 DebugRenderer::DebugRenderer(sf::RenderTarget& target)
 	: m_target{target}
 	, m_view{m_target.getDefaultView()}
 {
+	m_font.loadFromFile("/usr/share/fonts/truetype/freefont/FreeSerif.ttf");
+	m_text.setFont(m_font);
+	m_text.setCharacterSize(18);
+	m_text.setFillColor(sf::Color::White);
+	m_text.setOutlineColor(sf::Color(50, 50, 50));
+	m_text.setOutlineThickness(2.f);
 }
 
 auto DebugRenderer::set_view(sf::View view) -> void
@@ -58,6 +65,19 @@ auto DebugRenderer::draw_circle(v2 const& pos, float radius, sf::Color color) ->
     m_target.draw(circle);
 }
 
+auto DebugRenderer::draw_hud(World& world) -> void
+{
+	std::stringstream ss;
+	if(auto player = world.player(); player) {
+		auto& weapon = player->weapon_system().current_weapon();
+		ss << "Health: " << player->health() << std::endl;
+		ss << "Ammo: " << weapon.num_rounds() << " / " << weapon.max_rounds() << std::endl;
+		m_text.setString(ss.str());
+		m_text.setPosition({10, 50});
+		m_target.draw(m_text);
+	}
+}
+
 auto DebugRenderer::draw(World& world) -> void
 {
 	auto backup_view = m_target.getView();
@@ -76,13 +96,17 @@ auto DebugRenderer::draw(World& world) -> void
 
 	for(auto& bot : world.bots()) {
 		TheBot& e = *bot;
-		draw_circle(e.pos(), 1, sf::Color::Green);
-		draw_thick_line(e.pos(), e.pos() + e.heading(), 0.3, sf::Color::Blue);
-		draw_thick_line(e.pos(), e.pos() + e.facing(), 0.2, sf::Color::Yellow);
-		auto& feelers = e.steering().feelers();
-		for(auto& p : feelers) {
-			auto pf = body_to_world(e, p * e.steering().feeler_length());
-			draw_line(e.pos(), pf, sf::Color::Red);
+		if(e.is_alive()) {
+			draw_circle(e.pos(), 1, sf::Color::Green);
+			draw_thick_line(e.pos(), e.pos() + e.heading(), 0.3, sf::Color::Blue);
+			draw_thick_line(e.pos(), e.pos() + e.facing(), 0.2, sf::Color::Yellow);
+			auto& feelers = e.steering().feelers();
+			for(auto& p : feelers) {
+				auto pf = body_to_world(e, p * e.steering().feeler_length());
+				draw_line(e.pos(), pf, sf::Color::Red);
+			}
+		} else if(e.is_dead()) {
+			draw_circle(e.pos(), 1, sf::Color(165, 42, 42));
 		}
 
 		// wander debug
@@ -123,6 +147,8 @@ auto DebugRenderer::draw(World& world) -> void
 	}
 
 	m_target.setView(backup_view);
+
+	draw_hud(world);
 }
 
 auto DebugRenderer::handle_event(sf::Event const& event) -> void
